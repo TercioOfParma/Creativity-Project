@@ -40,7 +40,7 @@ class person:
         self.name = name + self.title()
         self.lineage = self.begetting(markov)
         if(isBorn == False):
-            self.life = self.lineage + self.name
+            self.life = self.lineage + self.name + '\n'
         else:
             self.born(markov, Parent)
         self.actions = []  # A list that contains all of the actions
@@ -50,6 +50,10 @@ class person:
         self.lineage = parent.lineage + parent.name
         print("FORNICATION " + self.life)
     def death(self):
+        if not self.virtue.inSin:
+            self.life = self.life + self.name + " dies a happy death" + '\n'
+        else:
+            self.life = self.life + self.name + " dies an unhappy death" + '\n'
         fp = open("story/" + self.name + '.txt', 'w')
         fp.write(self.life)
         fp.close()
@@ -251,12 +255,12 @@ class person:
     def year(self, persons, year, markov):
          self.age += 1
          if self.age > self.ageLimit:
-             self.isAlive = False
-             if not self.virtue.inSin:
-                 self.life = self.life + self.name + " dies a happy death" + '\n'
+             if self.isAlive:
+                self.isAlive = False
+                self.death()
+                return
              else:
-                 self.life = self.life + self.name + " dies an unhappy death" + '\n'
-             return
+                 return
          if self.virtue.inSin == "True" and random.randrange(0, 3) == 1:
              self.life = self.life + "In year " + str(year) + ", " + self.name + " repents his evil \n"
              self.virtue.inSin = False
@@ -267,12 +271,15 @@ class person:
          elif action.kindOfAction == INTENTIONAL_INTERIOR_GOOD:
              self.life = self.life + "In year " + str(year) + ", "
              self.interior_good(action)
-         elif action.kindOfAction == INTENTIONAL_EXTERIOR_GOOD:
+         elif action.kindOfAction == INTENTIONAL_EXTERIOR_GOOD or action.kindOfAction == THANKSGIVING:
              self.life = self.life + "In year " + str(year) + ", "
              self.exterior_good(action, persons[random.randrange(0, len(persons))])
-         elif action.kindOfAction == INTENTIONAL_EXTERIOR_EVIL:
+         elif action.kindOfAction == INTENTIONAL_EXTERIOR_EVIL or action.kindOfAction == DECEPTION or action.kindOfAction == STEALING:
              self.life = self.life + "In year " + str(year) + ", "
              self.exterior_evil(action, persons[random.randrange(0, len(persons))])
+         elif action.kindOfAction == VIOLENCE:
+             self.life = self.life + "In year " + str(year) + ", "
+             self.violence(action, persons[random.randrange(0, len(persons))], persons)
          elif action.kindOfAction == FORNICATION:
              self.life = self.life + "In year " + str(year) + ", "
              self.fornication(action, persons[random.randrange(0, len(persons))], persons, markov)
@@ -346,6 +353,19 @@ class person:
         elif virtueAttacked == prudence:
             self.virtue.prudence += 1
             person.virtue.prudence += 1
+
+    def violence(self, action, person, personList):
+        #virtueAttacked = action.virtueOperatedOn
+        sentence = action.verb
+        self.virtue.inSin = True
+        self.life = self.life + self.name + ' ' + sentence + person.name + '\n'
+
+        person.isAlive = False
+        person.death();
+        personList.remove(person)
+        self.virtue.charity = 0
+        self.virtue.faith = 0
+        self.virtue.hope = 0
 
     def exterior_evil(self, action, person):
         virtueAttacked = action.virtueOperatedOn
