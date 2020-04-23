@@ -8,27 +8,39 @@ numberOfPeople = 500
 generationNumber = 500
 people = 0
 year = 1
-generations = 10
+generations = 20
 generationFactor = 5
+babylonian = Markov('babylonian.txt')
+latin = Markov('latin.txt')
+hebrew = Markov('hebrew.txt')
+greek = Markov('greek.txt')
+egyptian = Markov('egyptian.txt')
 
-def generateGeneration(tempList, fashion):
+def generateGeneration(tempList):
     personList = sorted(tempList, key=lambda current: current.score, reverse=True)
     toGet = int(generationNumber / generationFactor)
     i = 0
     newList = []
     print("Number Survived: " + str(numberOfPeople) + " toGet " + str(toGet))
+    fashion = egyptian
     while i < generationNumber:
+        choose = random.randrange(1, 5)
+        if choose == 1:
+            fashion = latin
+        if choose == 2:
+            fashion = hebrew
+        if choose == 3:
+            fashion = babylonian
+        if choose == 4:
+            fashion = greek
+        if choose == 5:
+            fashion = egyptian
         tempPerson = person(fashion.New(), random.randrange(0, 40), fashion, False) #New person named based on the times
         tempPerson.virtue.spliceCharacter(personList[random.randrange(0, toGet)], personList[random.randrange(0, toGet)])
         tempPerson.generateActions()
         newList.append(tempPerson)
         i += 1
     return newList
-babylonian = Markov('babylonian.txt')
-latin = Markov('latin.txt')
-hebrew = Markov('hebrew.txt')
-greek = Markov('greek.txt')
-egyptian = Markov('egyptian.txt')
 
 print(egyptian.New())
 while people < numberOfPeople:
@@ -84,14 +96,13 @@ while i < generations:
     people = 0
 
     while people < numberOfPeople:
-        print(personList[people].life)
+        #print(personList[people].life)
         personList[people].death()
         people += 1
 
     if i != generations:
-        personList = generateGeneration(personList, fashion)
+        personList = generateGeneration(personList)
         numberOfPeople = generationNumber
-    print("New Generation")
 
 
 personList = sorted(personList, key=lambda current: current.score, reverse=True)

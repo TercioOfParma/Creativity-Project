@@ -69,9 +69,9 @@ class person:
     def death(self):
         self.score = self.virtue.generateVirtueScore() + (self.sinCount * SIN_WEIGHT) + (self.age * AGE_WEIGHT)
         if not self.virtue.inSin:
-            self.life = self.life + self.name + " dies a happy death" + '\n'
+            self.life = self.life + "Aged " + str(self.age) + " " + self.name + " dies a happy death" + '\n'
         else:
-            self.life = self.life + self.name + " dies an unhappy death" + '\n'
+            self.life = self.life + "Aged " + str(self.age) + " " + self.name + " dies an unhappy death" + '\n'
     def outputLife(self):
         fp = open("story/" + self.name + '.txt', 'w')
         fp.write(self.life)
