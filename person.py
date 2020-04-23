@@ -15,6 +15,9 @@ faith = 'FAITH'
 hope = 'HOPE'
 charity = 'CHARITY'
 
+AGE_WEIGHT = 20
+SIN_WEIGHT = 3
+
 FORTITUDE = 0
 JUSTICE = 1
 TEMPERANCE = 2
@@ -36,13 +39,10 @@ DECEPTION = 'DECEPTION'
 STEALING = 'STEALING'
 THANKSGIVING = 'THANKSGIVING'
 
-fortitudelist = ['Hard', 'Tough', 'Enduring', 'Longsuffering', 'Adamantine']
-justicelist  = ['Just', 'Litigious', 'Fair', 'Even-handed', 'Honourable']
-temperancelist  = ['Temperant', 'Sober', 'Ascetic', 'Pure of Heart', 'Disciplined']
-prudencelist  = ['Prudent', 'Wise', 'Scholastic', 'Reader', 'Bright']
-faithlist  = ['Trusting', 'Martyr', 'Faithful', 'Devoted', 'Dedicated']
-hopelist  = ['Hopeful', 'Optimistic', 'Sanguine', 'Positive', 'Rosy']
-charitylist  = ['Charitable', 'Apostle', 'Benevolent', 'Magnanimous', 'Philanthropic']
+fortitudelist = ['Hard', 'Tough', 'Enduring', 'Longsuffering', 'Adamantine' , 'Faithful', 'Devoted', 'Dedicated']
+justicelist  = ['Just', 'Litigious', 'Fair', 'Even-handed', 'Honourable','Benevolent', 'Magnanimous', 'Philanthropic']
+temperancelist  = ['Temperant', 'Sober', 'Ascetic', 'Pure of Heart', 'Disciplined', 'Controlled', 'Austere', 'Simple']
+prudencelist  = ['Prudent', 'Wise', 'Scholastic', 'Reader', 'Bright', 'Trusting', 'Sagacious', 'Cautious']
 class person:
     def __init__(self, name, age, markov, isBorn, Parent=None):
         self.virtue = virtues()
@@ -52,6 +52,7 @@ class person:
         self.sinCount = 1
         self.sinList = ""
         self.isAlive = True
+        self.score = 0
         #print(name)
         self.name = name + self.title()
         self.lineage = self.begetting(markov)
@@ -63,18 +64,21 @@ class person:
 
     def born(self, markov, parent):
         self.life = parent.lineage + parent.name + ' begot ' +  self.name + '\n'
-        self.lineage = parent.lineage + parent.name
-        print("FORNICATION " + self.life)
+        self.lineage = parent.lineage + ' ' + parent.name
+        #print("FORNICATION " + self.life)
     def death(self):
+        self.score = self.virtue.generateVirtueScore() + (self.sinCount * SIN_WEIGHT) + (self.age * AGE_WEIGHT)
         if not self.virtue.inSin:
             self.life = self.life + self.name + " dies a happy death" + '\n'
         else:
             self.life = self.life + self.name + " dies an unhappy death" + '\n'
+    def outputLife(self):
         fp = open("story/" + self.name + '.txt', 'w')
         fp.write(self.life)
+        fp.write('\n\n FINAL SCORE: ' + str(self.virtue.generateVirtueScore()))
         fp.close()
     def title(self):
-        adjective = random.randrange(1,5)
+        adjective = random.randrange(0,8)
         if self.virtue.selectedVirtue == FORTITUDE:
             return " The " + fortitudelist[adjective]
         if self.virtue.selectedVirtue == JUSTICE:
@@ -83,12 +87,6 @@ class person:
             return " The " + temperancelist[adjective]
         if self.virtue.selectedVirtue == PRUDENCE:
             return " The " + prudencelist[adjective]
-        if self.virtue.selectedVirtue == FAITH:
-            return " The " + faithlist[adjective]
-        if self.virtue.selectedVirtue == HOPE:
-            return " The " + hopelist[adjective]
-        if self.virtue.selectedVirtue == CHARITY:
-            return " The " + charitylist[adjective]
     def begetting(self, markov):
         numberOfGenerations = random.randrange(1,20)
         beget = ''
