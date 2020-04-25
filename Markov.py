@@ -1,4 +1,5 @@
 import random
+import re
 
 from collections import defaultdict
 from sys import argv
@@ -52,4 +53,5 @@ class Markov:
             else:
                 name = name + suffix
                 prefix = prefix[1:] + suffix
+        name = re.sub(r'[^a-zA-Z]', '',name)
         return name.capitalize()

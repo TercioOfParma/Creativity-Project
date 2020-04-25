@@ -50,7 +50,7 @@ class person:
         self.ageLimit = random.randrange(60, 80)
         self.sinLimit = random.randrange(1,40) #St Alphonsus Ligouri is quite keen to emphasise a single sin can doom
         self.sinCount = 1
-        self.sinList = ""
+        self.sinList = "Original Sin \n"
         self.isAlive = True
         self.score = 0
         #print(name)
@@ -111,7 +111,7 @@ class person:
         self.actions.append(moralAction('Reason', 'applies the moral law to his life.', INTENTIONAL_INTERIOR_GOOD,PRUDENCE))
         self.actions.append(moralAction('Foresight', 'avoids a previous stumbling block. ', INTENTIONAL_INTERIOR_GOOD,PRUDENCE))
         self.actions.append(moralAction('Circumspection', 'takes stock of his situation ', INTENTIONAL_INTERIOR_GOOD, PRUDENCE))
-        self.actions.append(moralAction('Caution', 'dodges a previous imperfection ', INTENTIONAL_EXTERIOR_GOOD,PRUDENCE))
+        self.actions.append(moralAction('Caution', 'dodges a previous imperfection ', INTENTIONAL_INTERIOR_GOOD,PRUDENCE))
 
         #NEGATIVE
         self.actions.append(moralAction('Precipitation', 'rashly ignores the counsel of ', INTENTIONAL_EXTERIOR_EVIL, PRUDENCE))
@@ -145,7 +145,7 @@ class person:
         self.actions.append(moralAction('Honesty', 'reveals his sin to ', INTENTIONAL_EXTERIOR_GOOD, JUSTICE))
         self.actions.append(moralAction('Friendship', 'makes friends with ', INTENTIONAL_EXTERIOR_GOOD, JUSTICE))
         self.actions.append(moralAction('Liberality', 'Gives alms', INTENTIONAL_INTERIOR_GOOD,JUSTICE))
-        self.actions.append(moralAction('Epieikeia', 'meditates on the moral law ', INTENTIONAL_EXTERIOR_GOOD, JUSTICE))
+        self.actions.append(moralAction('Epieikeia', 'meditates on the moral law ', INTENTIONAL_INTERIOR_GOOD, JUSTICE))
 
         #NEGATIVE
         self.actions.append(moralAction('Commutative', 'unnecessarily supplicates to ', INTENTIONAL_EXTERIOR_EVIL,JUSTICE))
@@ -284,7 +284,7 @@ class person:
                  return
          if self.virtue.inSin == True and (random.randrange(0, 2) == 1 or self.virtue.selectedVirtue == JUSTICE or self.virtue.selectedVirtue == CHARITY):
              self.life = self.life + "In year " + str(year) + ", " + self.name + repentence[random.randrange(0, 5)] + ":\n" + self.sinList
-             self.sinList = ""
+             self.sinList = "Previous Sins \n"
              self.virtue.inSin = False
          while 1:
              actionSelector = random.randrange(0, len(self.actions))
@@ -347,7 +347,7 @@ class person:
              self.fornication(action, persons[random.randrange(0, len(persons))], persons, markov)
          elif action.kindOfAction == REPENTENCE:
              self.life = self.life + "In year " + str(year) + ", " + self.name + repentence[random.randrange(0,5)] + ":\n" + self.sinList
-             self.sinList = ""
+             self.sinList = "Previous Sins \n"
              self.virtue.inSin = False
     def interior_evil(self, action):
         virtueAttacked = action.virtueOperatedOn
